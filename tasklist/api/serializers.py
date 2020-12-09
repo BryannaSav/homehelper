@@ -2,13 +2,6 @@ from rest_framework import serializers
 from tasklist.models import  User, Calendar, CalendarDay, CalendarEvent, TaskList, ListItem
 
 
-class UserSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = "__all__"
-
-
 class CalendarEventSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -17,7 +10,7 @@ class CalendarEventSerializer(serializers.ModelSerializer):
 
 
 class CalendarDaySerializer(serializers.ModelSerializer):
-    calendar_events = CalendarEventSerializer(many=True, read_only=True)
+    calendar_events = CalendarEventSerializer()
 
     class Meta:
         model = CalendarDay
@@ -40,10 +33,16 @@ class ListItemSerializer(serializers.ModelSerializer):
 
 
 class TaskListSerializer(serializers.ModelSerializer):
-#    list_items = ListItemSerializer(many=True, read_only=True)
+    #list_items = ListItemSerializer()
 
     class Meta:
         model = TaskList
         fields = "__all__"
 
 
+class UserSerializer(serializers.ModelSerializer):
+    task_lists = TaskListSerializer()
+
+    class Meta:
+        model = User
+        fields = "__all__"

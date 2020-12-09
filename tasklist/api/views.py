@@ -56,10 +56,10 @@ class TaskListCreateAPIView(generics.CreateAPIView):
     queryset = TaskList.objects.all()
     serializer_class = TaskListSerializer
 
-    def perform_create(self, serializer):
-        # Currently creates task list but does not add user to it
-        user_pk = self.kwargs.get("user_pk")
-        user = get_object_or_404(User, pk=user_pk) 
+    # def perform_create(self, serializer):
+    #     # Currently creates task list but does not add user to it
+    #     user_pk = self.kwargs.get("user_pk")
+    #     user = get_object_or_404(User, pk=user_pk) 
 
 
 class TaskListListAPIView(generics.ListAPIView):

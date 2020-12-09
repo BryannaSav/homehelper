@@ -19,7 +19,7 @@ class Calendar(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    users = models.ManyToManyField(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -60,7 +60,7 @@ class TaskList(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    users = models.ManyToManyField(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="task_lists")
 
     def __str__(self):
         return self.name
