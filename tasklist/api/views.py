@@ -1,21 +1,53 @@
 from rest_framework import generics, status
 
-from tasklist.models import  User, Calendar, CalendarDay, CalendarEvent, TaskList, ListItem
-from tasklist.api.serializers import  (UserSerializer, CalendarSerializer, CalendarDaySerializer, 
-                                        CalendarEventSerializer, TaskListSerializer, ListItemSerializer)
+from tasklist.models import (User, Calendar, CalendarDay, 
+                                        CalendarEvent, TaskList, ListItem)
+from tasklist.api.serializers import (UserSerializer, CalendarEventSerializer, 
+                                        CalendarSerializer, CalendarDaySerializer, 
+                                        TaskListSerializer, ListItemSerializer)
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 #-------------------- USER -------------------#
 
-class UserListCreateAPIView(generics.ListCreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+class UserListCreateAPIView(APIView):
 
+    def get(self, request):
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
 
-class UserDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    def post(self, request):
+        serializer = UserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+class UserDetailAPIView(APIView):
+
+    def get_object(self, pk):
+        user = get_object_or_404(User, pk=pk)
+        return user
+
+    def get(self, request, pk):
+        user = self.get_object(pk)
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        user = self.get_object(pk)
+        serializer = UserSerializer(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        user = self.get_object(pk)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 #-------------------- CALENDAR -------------------#
     
@@ -52,24 +84,43 @@ class CalendarEventDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 #-------------------- TASK LIST -------------------#
 
-class TaskListCreateAPIView(generics.CreateAPIView):
-    queryset = TaskList.objects.all()
-    serializer_class = TaskListSerializer
+class TaskListListCreateAPIView(APIView):
 
-    # def perform_create(self, serializer):
-    #     # Currently creates task list but does not add user to it
-    #     user_pk = self.kwargs.get("user_pk")
-    #     user = get_object_or_404(User, pk=user_pk) 
+    def get(self, request):
+        tasklists = TaskList.objects.all()
+        serializer = TaskListSerializer(tasklists, many=True)
+        return Response(serializer.data)
 
+    def post(self, request):
+        serializer = TaskListSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
-class TaskListListAPIView(generics.ListAPIView):
-    queryset = TaskList.objects.all()
-    serializer_class = TaskListSerializer
+class TaskListDetailAPIView(APIView):
 
+    def get_object(self, pk):
+        tasklist = get_object_or_404(TaskList, pk=pk)
+        return tasklist
 
-class TaskListDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = TaskList.objects.all()
-    serializer_class = TaskListSerializer
+    def get(self, request, pk):
+        tasklist = self.get_object(pk)
+        serializer = TaskListSerializer(tasklist)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        tasklist = self.get_object(pk)
+        serializer = TaskListSerializer(tasklist, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        tasklist = self.get_object(pk)
+        tasklist.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 #-------------------- LIST ITEM -------------------#
 

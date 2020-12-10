@@ -10,7 +10,7 @@ class CalendarEventSerializer(serializers.ModelSerializer):
 
 
 class CalendarDaySerializer(serializers.ModelSerializer):
-    calendar_events = CalendarEventSerializer()
+    calendar_events = CalendarEventSerializer(many=True)
 
     class Meta:
         model = CalendarDay
@@ -33,7 +33,7 @@ class ListItemSerializer(serializers.ModelSerializer):
 
 
 class TaskListSerializer(serializers.ModelSerializer):
-    #list_items = ListItemSerializer()
+    #list_items = ListItemSerializer(many=True)
 
     class Meta:
         model = TaskList
@@ -41,7 +41,7 @@ class TaskListSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    task_lists = TaskListSerializer()
+    task_lists = TaskListSerializer(many=True)
 
     class Meta:
         model = User
