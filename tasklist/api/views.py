@@ -51,14 +51,44 @@ class UserDetailAPIView(APIView):
 
 #-------------------- CALENDAR -------------------#
     
-class CalendarListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Calendar.objects.all()
-    serializer_class = CalendarSerializer
+class CalendarListCreateAPIView(APIView):
 
+    def get(self, request):
+        calendars = Calendar.objects.all()
+        serializer = CalendarSerializer(calendars, many=True)
+        return Response(serializer.data)
 
-class CalendarDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Calendar.objects.all()
-    serializer_class = CalendarSerializer
+    def post(self, request):
+        serializer = CalendarSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+class CalendarDetailAPIView(APIView):
+
+    def get_object(self, pk):
+        calendar = get_object_or_404(Calendar, pk=pk)
+        return calendar
+
+    def get(self, request, pk):
+        calendar = self.get_object(pk)
+        serializer = CalendarSerializer(calendar)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        calendar = self.get_object(pk)
+        serializer = CalendarSerializer(calendar, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        calendar = self.get_object(pk)
+        calendar.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 #-------------------- CALENDAR DAY -------------------#
 

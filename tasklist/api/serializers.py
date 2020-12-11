@@ -41,7 +41,9 @@ class TaskListSerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    # For testing, may remove later depending on needed api calls
     task_lists = TaskListSerializer(many=True)
+    calendars = CalendarSerializer(many=True)
 
     class Meta:
         model = User
