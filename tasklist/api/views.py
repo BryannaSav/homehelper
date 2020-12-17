@@ -92,29 +92,96 @@ class CalendarDetailAPIView(APIView):
 
 #-------------------- CALENDAR DAY -------------------#
 
-class CalendarDayListCreateAPIView(generics.ListCreateAPIView):
-    queryset = CalendarDay.objects.all()
-    serializer_class = CalendarDaySerializer
+class CalendarDayListCreateAPIView(APIView):
+
+    def get(self, request):
+        print("Getting calendar day")
+        calendardays = CalendarDay.objects.all()
+        serializer = CalendarDaySerializer(calendardays, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        print("Hitting calendar day post route")
+        serializer = CalendarDaySerializer(data=request.data)
+        if serializer.is_valid():
+            print("Saving calendar day")
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        print("Error on saving calendar day")
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 
-class CalendarDayDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = CalendarDay.objects.all()
-    serializer_class = CalendarDaySerializer
+class CalendarDayDetailAPIView(APIView):
+
+    def get_object(self, pk):
+        calendarday = get_object_or_404(CalendarDay, pk=pk)
+        return calendarday
+
+    def get(self, request, pk):
+        calendarday = self.get_object(pk)
+        serializer = CalendarDaySerializer(calendarday)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        calendarday = self.get_object(pk)
+        serializer = CalendarDaySerializer(calendarday, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        calendarday = self.get_object(pk)
+        calendarday.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 #-------------------- CALENDAR EVENT -------------------#
 
-class CalendarEventListCreateAPIView(generics.ListCreateAPIView):
-    queryset = CalendarEvent.objects.all()
-    serializer_class = CalendarEventSerializer
+class CalendarEventListCreateAPIView(APIView):
+
+    def get(self, request):
+        calendarevents = CalendarEvent.objects.all()
+        serializer = CalendarEventSerializer(calendarevents, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        # NEED TO FIX SO IT DOESN'T NEED BOTH A START DATE AND DAY RELATIONSHIP
+        # What to do about end date?  Add to multiple days?
+        serializer = CalendarEventSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 
-class CalendarEventDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = CalendarEvent.objects.all()
-    serializer_class = CalendarEventSerializer
+class CalendarEventDetailAPIView(APIView):
+
+    def get_object(self, pk):
+        calendarevent = get_object_or_404(CalendarEvent, pk=pk)
+        return calendarevent
+
+    def get(self, request, pk):
+        calendarevent = self.get_object(pk)
+        serializer = CalendarEventSerializer(calendarevent)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        calendarevent = self.get_object(pk)
+        serializer = CalendarEventSerializer(calendarevent, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        calendarevent = self.get_object(pk)
+        calendarevent.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 #-------------------- TASK LIST -------------------#
 
 class TaskListListCreateAPIView(APIView):
+    # NEED TO FIX SO IT DOESN'T NEED BOTH A START DATE AND DAY RELATIONSHIP
 
     def get(self, request):
         tasklists = TaskList.objects.all()
@@ -154,13 +221,43 @@ class TaskListDetailAPIView(APIView):
 
 #-------------------- LIST ITEM -------------------#
 
-class ListItemCreateAPIView(generics.CreateAPIView):
-    queryset = ListItem.objects.all()
-    serializer_class = ListItemSerializer
+class ListItemListCreateAPIView(APIView):
 
-    def perform_create(self, serializer):
-        tasklist_pk = self.kwargs.get("tasklist_pk")
-        tasklist = get_object_or_404(TaskList, pk=tasklist_pk)
-        serializer.save(tasklist=tasklist)
+    def get(self, request):
+        listitems = ListItem.objects.all()
+        serializer = ListItemSerializer(listitems, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = ListItemSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+class ListItemDetailAPIView(APIView):
+
+    def get_object(self, pk):
+        listitem = get_object_or_404(ListItem, pk=pk)
+        return listitem
+
+    def get(self, request, pk):
+        listitem = self.get_object(pk)
+        serializer = ListItemSerializer(listitem)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        listitem = self.get_object(pk)
+        serializer = ListItemSerializer(listitem, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        listitem = self.get_object(pk)
+        listitem.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 

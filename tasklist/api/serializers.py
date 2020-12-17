@@ -33,7 +33,7 @@ class ListItemSerializer(serializers.ModelSerializer):
 
 
 class TaskListSerializer(serializers.ModelSerializer):
-    #list_items = ListItemSerializer(many=True)
+    list_items = ListItemSerializer(many=True)
 
     class Meta:
         model = TaskList

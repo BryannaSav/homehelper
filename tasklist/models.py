@@ -37,7 +37,7 @@ class CalendarDay(models.Model):
     calendar = models.ManyToManyField(Calendar)
 
     def __str__(self):
-        return self.day
+        return self.day_name + " " + self.month_name + " " + str(self.day)
 
 
 class CalendarEvent(models.Model):
