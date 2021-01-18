@@ -12,33 +12,31 @@ class User(models.Model):
     def __str__(self):
         return self.email
 
+# class Calendar(models.Model):
+#     name = models.CharField(max_length=120)
+#     description = models.TextField(blank=True, null=True)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
 
-class Calendar(models.Model):
-    name = models.CharField(max_length=120)
-    description = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="calendars")
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="calendars")
-
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
         
 
-class CalendarDay(models.Model):
-    year = models.PositiveIntegerField()
-    month = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(12)])
-    day = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(31)])
-    day_name = models.CharField(max_length=8)
-    month_name = models.CharField(max_length=9)
-    holiday_flag = models.BooleanField(default=False)
-    weekend_flag = models.BooleanField(default=False)
+# class CalendarDay(models.Model):
+#     year = models.PositiveIntegerField()
+#     month = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(12)])
+#     day = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(31)])
+#     day_name = models.CharField(max_length=8)
+#     month_name = models.CharField(max_length=9)
+#     holiday_flag = models.BooleanField(default=False)
+#     weekend_flag = models.BooleanField(default=False)
 
-    calendar = models.ManyToManyField(Calendar)
+#     calendar = models.ManyToManyField(Calendar)
 
-    def __str__(self):
-        return self.day_name + " " + self.month_name + " " + str(self.day)
-
+#     def __str__(self):
+#         return self.day_name + " " + self.month_name + " " + str(self.day)
 
 class CalendarEvent(models.Model):
     name = models.CharField(max_length=120)
@@ -48,7 +46,7 @@ class CalendarEvent(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    day = models.ForeignKey(CalendarDay, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -76,7 +74,6 @@ class ListItem(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     task_list = models.ForeignKey(TaskList, on_delete=models.CASCADE)
-    day = models.ForeignKey(CalendarDay, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.task

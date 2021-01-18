@@ -1,9 +1,8 @@
 from rest_framework import generics, status
 
-from tasklist.models import (User, Calendar, CalendarDay, 
-                                        CalendarEvent, TaskList, ListItem)
+from tasklist.models import (User, CalendarEvent, TaskList, ListItem)
 from tasklist.api.serializers import (UserSerializer, CalendarEventSerializer, 
-                                        CalendarSerializer, CalendarDaySerializer, 
+                                        # CalendarSerializer, CalendarDaySerializer, 
                                         TaskListSerializer, ListItemSerializer)
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
@@ -51,89 +50,89 @@ class UserDetailAPIView(APIView):
 
 #-------------------- CALENDAR -------------------#
     
-class CalendarListCreateAPIView(APIView):
+# class CalendarListCreateAPIView(APIView):
 
-    def get(self, request):
-        calendars = Calendar.objects.all()
-        serializer = CalendarSerializer(calendars, many=True)
-        return Response(serializer.data)
+#     def get(self, request):
+#         calendars = Calendar.objects.all()
+#         serializer = CalendarSerializer(calendars, many=True)
+#         return Response(serializer.data)
 
-    def post(self, request):
-        serializer = CalendarSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+#     def post(self, request):
+#         serializer = CalendarSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
-class CalendarDetailAPIView(APIView):
+# class CalendarDetailAPIView(APIView):
 
-    def get_object(self, pk):
-        calendar = get_object_or_404(Calendar, pk=pk)
-        return calendar
+#     def get_object(self, pk):
+#         calendar = get_object_or_404(Calendar, pk=pk)
+#         return calendar
 
-    def get(self, request, pk):
-        calendar = self.get_object(pk)
-        serializer = CalendarSerializer(calendar)
-        return Response(serializer.data)
+#     def get(self, request, pk):
+#         calendar = self.get_object(pk)
+#         serializer = CalendarSerializer(calendar)
+#         return Response(serializer.data)
 
-    def put(self, request, pk):
-        calendar = self.get_object(pk)
-        serializer = CalendarSerializer(calendar, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+#     def put(self, request, pk):
+#         calendar = self.get_object(pk)
+#         serializer = CalendarSerializer(calendar, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
-        calendar = self.get_object(pk)
-        calendar.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+#     def delete(self, request, pk):
+#         calendar = self.get_object(pk)
+#         calendar.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 #-------------------- CALENDAR DAY -------------------#
 
-class CalendarDayListCreateAPIView(APIView):
+# class CalendarDayListCreateAPIView(APIView):
 
-    def get(self, request):
-        print("Getting calendar day")
-        calendardays = CalendarDay.objects.all()
-        serializer = CalendarDaySerializer(calendardays, many=True)
-        return Response(serializer.data)
+#     def get(self, request):
+#         print("Getting calendar day")
+#         calendardays = CalendarDay.objects.all()
+#         serializer = CalendarDaySerializer(calendardays, many=True)
+#         return Response(serializer.data)
 
-    def post(self, request):
-        print("Hitting calendar day post route")
-        serializer = CalendarDaySerializer(data=request.data)
-        if serializer.is_valid():
-            print("Saving calendar day")
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        print("Error on saving calendar day")
-        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+#     def post(self, request):
+#         print("Hitting calendar day post route")
+#         serializer = CalendarDaySerializer(data=request.data)
+#         if serializer.is_valid():
+#             print("Saving calendar day")
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         print("Error on saving calendar day")
+#         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 
-class CalendarDayDetailAPIView(APIView):
+# class CalendarDayDetailAPIView(APIView):
 
-    def get_object(self, pk):
-        calendarday = get_object_or_404(CalendarDay, pk=pk)
-        return calendarday
+#     def get_object(self, pk):
+#         calendarday = get_object_or_404(CalendarDay, pk=pk)
+#         return calendarday
 
-    def get(self, request, pk):
-        calendarday = self.get_object(pk)
-        serializer = CalendarDaySerializer(calendarday)
-        return Response(serializer.data)
+#     def get(self, request, pk):
+#         calendarday = self.get_object(pk)
+#         serializer = CalendarDaySerializer(calendarday)
+#         return Response(serializer.data)
 
-    def put(self, request, pk):
-        calendarday = self.get_object(pk)
-        serializer = CalendarDaySerializer(calendarday, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+#     def put(self, request, pk):
+#         calendarday = self.get_object(pk)
+#         serializer = CalendarDaySerializer(calendarday, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk):
-        calendarday = self.get_object(pk)
-        calendarday.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+#     def delete(self, request, pk):
+#         calendarday = self.get_object(pk)
+#         calendarday.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
 
 #-------------------- CALENDAR EVENT -------------------#
 
@@ -181,7 +180,6 @@ class CalendarEventDetailAPIView(APIView):
 #-------------------- TASK LIST -------------------#
 
 class TaskListListCreateAPIView(APIView):
-    # NEED TO FIX SO IT DOESN'T NEED BOTH A START DATE AND DAY RELATIONSHIP
 
     def get(self, request):
         tasklists = TaskList.objects.all()
