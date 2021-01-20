@@ -1,42 +1,6 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator 
-
-class User(models.Model):
-    first_name = models.CharField(max_length=120)
-    last_name = models.CharField(max_length=120)
-    email = models.CharField(max_length=120)
-    password = models.CharField(max_length=120)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.email
-
-# class Calendar(models.Model):
-#     name = models.CharField(max_length=120)
-#     description = models.TextField(blank=True, null=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-
-#     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="calendars")
-
-#     def __str__(self):
-#         return self.name
-        
-
-# class CalendarDay(models.Model):
-#     year = models.PositiveIntegerField()
-#     month = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(12)])
-#     day = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(31)])
-#     day_name = models.CharField(max_length=8)
-#     month_name = models.CharField(max_length=9)
-#     holiday_flag = models.BooleanField(default=False)
-#     weekend_flag = models.BooleanField(default=False)
-
-#     calendar = models.ManyToManyField(Calendar)
-
-#     def __str__(self):
-#         return self.day_name + " " + self.month_name + " " + str(self.day)
+from django.contrib.auth.models import User 
 
 class CalendarEvent(models.Model):
     name = models.CharField(max_length=120)
@@ -46,11 +10,10 @@ class CalendarEvent(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="calendar_events")
 
     def __str__(self):
         return self.name
-
 
 class TaskList(models.Model):
     name = models.CharField(max_length=120)
@@ -63,7 +26,6 @@ class TaskList(models.Model):
     def __str__(self):
         return self.name
         
-
 class ListItem(models.Model):
     task = models.CharField(max_length=120)
     completed = models.BooleanField(default=False)
@@ -74,6 +36,7 @@ class ListItem(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     task_list = models.ForeignKey(TaskList, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="list_items")
 
     def __str__(self):
         return self.task
