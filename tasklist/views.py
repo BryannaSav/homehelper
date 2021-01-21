@@ -3,14 +3,22 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User 
 from django.contrib.auth.decorators import login_required
+
 from .forms import RegisterForm
 from .models import CalendarEvent, TaskList, ListItem
+from datetime import timedelta, date
+import json
+
 
 @login_required
 def dashboard(request):
-    task_lists = TaskList.objects.filter(user=request.user.id)
-    print(task_lists)
-    return render(request, "tasklist/dashboard.html")
+    start_day = date.today()
+    end_date = start_day.today() + timedelta(days=7)
+    upcoming_events = CalendarEvent.objects.filter(user=request.user.id, 
+        start_date__range=[start_day, end_date]).order_by('start_date')
+    upcoming_tasks = ListItem.objects.filter(user=request.user.id, 
+        due_date__range=[start_day, end_date]).order_by('due_date')
+    return render(request, "tasklist/dashboard.html", {'upcoming_events':upcoming_events, 'upcoming_tasks':upcoming_tasks})
 
 def register(request):
     print("Hit reg")
@@ -46,3 +54,14 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return redirect('/')
+
+
+def testroute(request):
+    context = {
+        'cat': json.dumps({
+            'name':'Sam',
+            'age' : '8 months',
+            'status' : 'cute'
+        })
+    }
+    return render(request, 'tasklist/index.html', context)
