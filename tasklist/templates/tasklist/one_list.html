@@ -17,7 +17,7 @@
         <div id="app">
             <v-app> 
                 <v-content>
-                    <v-row justify="space-between" class="fill-height">
+                    <v-row justify="space-between" class="fill-height" >
                         <v-col cols="1" class="blue">
                             <v-container>
                                 <h2>Dashboard</h2>
@@ -28,39 +28,41 @@
                                 </ul>
                             </v-container>
                         </v-col>
-                        <v-col cols="4">
+                        <v-col cols="10">
                             <v-container class="ml-10">
-                                <h1>Upcoming Events/Tasks</h1>
+                                <h1>{{task_list}}</h1>
                                 <v-simple-table>
                                     <template>
                                         <thead>
                                             <tr>
                                                 <th>
-                                                    Date
+                                                    Status
                                                 </th>
                                                 <th>
                                                     Name
                                                 </th>
+                                                <th>
+                                                    Date
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for event in upcoming_events %}
+                                            {% for item in list_items %}
                                             <tr>
                                                 <td>
-                                                    {{event}}
+                                                    {% if item.completed == True %}
+                                                        <input type="checkbox" checked>
+                                                    {% endif %}
+                                                    {% if item.completed == False %}
+                                                        <input type="checkbox">
+                                                    {% endif %}
+
                                                 </td>
                                                 <td>
-                                                    {{event.start_date|date:"M d, Y" }}
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                            {% for task in upcoming_tasks %}
-                                            <tr>
-                                                <td>
-                                                    {{task}}
+                                                    {{item.task}}
                                                 </td>
                                                 <td>
-                                                    {{task.due_date|date:"M d, Y" }}
+                                                    {{item.due_date|date:"M d, Y" }}
                                                 </td>
                                             </tr>
                                             {% endfor %}
@@ -68,30 +70,6 @@
                                     </template>
                                 </v-simple-table>
                             </v-container>
-                        </v-col>
-                        <v-divider
-                            vertical
-                        ></v-divider>
-                        <v-col cols="5" class="mr-8 mt-8">
-                            <v-row>
-                                <template>
-                                    <v-row>
-                                      <v-col>
-                                        <v-sheet height="500">
-                                          <v-calendar
-                                            :now="today"
-                                            :value="today"
-                                            color="primary"
-                                          >
-                                          </v-calendar>
-                                        </v-sheet>
-                                      </v-col>
-                                    </v-row>
-                                  </template>
-                            </v-row>
-                            <v-row>
-
-                            </v-row>
                         </v-col>
                     </v-row>
                 </v-content>

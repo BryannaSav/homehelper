@@ -18,18 +18,19 @@ def dashboard(request):
         start_date__range=[start_day, end_date]).order_by('start_date')
     upcoming_tasks = ListItem.objects.filter(user=request.user.id, 
         due_date__range=[start_day, end_date]).order_by('due_date')
-    return render(request, "tasklist/dashboard.html", {'upcoming_events':upcoming_events, 'upcoming_tasks':upcoming_tasks})
+    return render(request, 'tasklist/dashboard.html', 
+        {'upcoming_events':upcoming_events,'upcoming_tasks':upcoming_tasks})
 
 def register(request):
-    if request.method == "POST":
-        print("POST")
+    if request.method == 'POST':
+        print('POST')
         form = RegisterForm(request.POST)
         if form.is_valid():
             form.save()
-        return redirect("/dashboard")
+        return redirect('/dashboard')
     else:
         form = RegisterForm()
-    return render(request, "tasklist/register.html", {"form":form})
+    return render(request, 'tasklist/register.html', {'form':form})
 
 def user_login(request):
     if request.method == 'POST':
@@ -40,23 +41,41 @@ def user_login(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                print("proper login")
+                print('proper login')
                 return redirect('/dashboard')
             else:
-                print("User in none")
+                print('User in none')
         else:
-            print("Not valid form")
+            print('Not valid form')
     form = AuthenticationForm()
-    return render(request, "tasklist/login.html", {"form":form})
+    return render(request, 'tasklist/login.html', {'form':form})
 
-# def lists(request):
-#     lists = TaskList.objects.filter(user=request.user.id)
-#     return render(request, "tasklist/lists.html", {lists: lists})
+@login_required
+def lists(request):
+    lists = TaskList.objects.filter(user=request.user.id)
+    return render(request, 'tasklist/lists.html', {'lists': lists})
+
+
+@login_required
+def create_list(request):
+    if request.method == 'POST':
+        task_list = TaskList(name=request.POST['name'], 
+            description=request.POST['description'], 
+            user=request.user)
+        task_list.save()
+    return redirect("/lists")
+
+@login_required
+def one_list(request, id):
+    task_list = TaskList.objects.get(id=id)
+    list_items = ListItem.objects.filter(task_list=id)
+    print(task_list)
+    print(list_items)
+    return render(request, 'tasklist/one_list.html', {'task_list': task_list, 'list_items': list_items})
 
 def user_logout(request):
     logout(request)
     return redirect('/')
-
 
 def testroute(request):
     context = {
