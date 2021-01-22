@@ -21,7 +21,6 @@ def dashboard(request):
     return render(request, "tasklist/dashboard.html", {'upcoming_events':upcoming_events, 'upcoming_tasks':upcoming_tasks})
 
 def register(request):
-    print("Hit reg")
     if request.method == "POST":
         print("POST")
         form = RegisterForm(request.POST)
@@ -33,7 +32,6 @@ def register(request):
     return render(request, "tasklist/register.html", {"form":form})
 
 def user_login(request):
-    print("hit login")
     if request.method == 'POST':
         form = AuthenticationForm(request=request, data=request.POST)
         if form.is_valid():
@@ -50,6 +48,10 @@ def user_login(request):
             print("Not valid form")
     form = AuthenticationForm()
     return render(request, "tasklist/login.html", {"form":form})
+
+# def lists(request):
+#     lists = TaskList.objects.filter(user=request.user.id)
+#     return render(request, "tasklist/lists.html", {lists: lists})
 
 def user_logout(request):
     logout(request)

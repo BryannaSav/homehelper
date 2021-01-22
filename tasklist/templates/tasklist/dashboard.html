@@ -7,34 +7,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
     <script src="https://unpkg.com/vue"></script>
     </head>
+    <style>
+        a{
+            color: black !important;
+            text-decoration: none;
+        }
+    </style>
     <body>
         <div id="app">
             <v-app> 
                 <v-content>
-                    <v-row>
-                        <v-col cols="2">
-                            <v-container class="blue">
+                    <v-row justify="space-between" class="fill-height">
+                        <v-col cols="1" class="blue">
+                            <v-container>
                                 <h2>Dashboard</h2>
-                                <ul>
-                                    <li><a href="/dashboard">Dashboard</a></li>
-                                    <li><a href="/dashboard">Calendar</a></li>
-                                    <li><a href="/dashboard">Lists</a></li>
+                                <ul >
+                                    <v-list-item><a href="/dashboard">Dashboard</a></v-list-item>
+                                    <v-list-item><a href="/dashboard">Calendar</a></v-list-item>
+                                    <v-list-item><a href="/lists">Lists</a></v-list-item>
                                 </ul>
                             </v-container>
                         </v-col>
-                        <v-col cols="10">
+                        <v-col cols="4">
                             <v-container class="ml-10">
-                                
                                 <h1>Upcoming Events/Tasks</h1>
-                                <ul>
-                                    {% for event in upcoming_events %}
-                                    <li>{{event}} | {{event.start_date|date:"M d, Y" }}</li>
-                                    {% endfor %}
-                                    {% for task in upcoming_tasks %}
-                                    <li>{{task}} | {{task.due_date|date:"M d, Y" }}</li>
-                                    {% endfor %}
-                                </ul>
+                                <v-simple-table>
+                                    <template>
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    Date
+                                                </th>
+                                                <th>
+                                                    Name
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for event in upcoming_events %}
+                                            <tr>
+                                                <td>
+                                                    {{event}}
+                                                </td>
+                                                <td>
+                                                    {{event.start_date|date:"M d, Y" }}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                            {% for task in upcoming_tasks %}
+                                            <tr>
+                                                <td>
+                                                    {{task}}
+                                                </td>
+                                                <td>
+                                                    {{task.due_date|date:"M d, Y" }}
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </template>
+                                </v-simple-table>
                             </v-container>
+                        </v-col>
+                        <v-divider
+                            vertical
+                        ></v-divider>
+                        <v-col cols="5" class="mr-8 mt-8">
+                            <v-row>
+                                <template>
+                                    <v-row>
+                                      <v-col>
+                                        <v-sheet height="500">
+                                          <v-calendar
+                                            :now="today"
+                                            :value="today"
+                                            color="primary"
+                                          >
+                                          </v-calendar>
+                                        </v-sheet>
+                                      </v-col>
+                                    </v-row>
+                                  </template>
+                            </v-row>
+                            <v-row>
+
+                            </v-row>
                         </v-col>
                     </v-row>
                 </v-content>
