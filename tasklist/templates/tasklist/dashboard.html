@@ -44,23 +44,13 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for event in upcoming_events %}
+                                            {% for item in all_upcoming %}
                                             <tr>
                                                 <td>
-                                                    {{event}}
+                                                    {{item}}
                                                 </td>
                                                 <td>
-                                                    {{event.start_date|date:"M d, Y" }}
-                                                </td>
-                                            </tr>
-                                            {% endfor %}
-                                            {% for task in upcoming_tasks %}
-                                            <tr>
-                                                <td>
-                                                    {{task}}
-                                                </td>
-                                                <td>
-                                                    {{task.due_date|date:"M d, Y" }}
+                                                    {{item.start_date|date:"M d, Y" }} {{item.due_date|date:"M d, Y" }}
                                                 </td>
                                             </tr>
                                             {% endfor %}
@@ -78,13 +68,29 @@
                                     <v-row>
                                       <v-col>
                                         <v-sheet height="500">
-                                          <v-calendar
+                                            <v-calendar
+                                            @click:date="viewDay"
+                                            >
+                                            </v-calendar>
+
+                                          <!-- <v-calendar
                                             :now="today"
                                             :value="today"
                                             color="primary"
+                                            :attributes='attributes'
+                                            @dayclick='dayClicked'
+
                                           >
-                                          </v-calendar>
+                                          </v-calendar> -->
                                         </v-sheet>
+                                        <v-card v-if="day_selected" class="mt-10">
+                                            <v-card-title>[[date]]</v-card-title>
+                                            <v-card-text v-for="item in day_items" :key="name">
+                                                <a href="/">[[item.name]]</a>
+                                                <a :href="'/list/' + item.task_list_id">[[item.task]]</a>         
+                                            </v-card-text>
+                                        </v-card>
+
                                       </v-col>
                                     </v-row>
                                   </template>
@@ -100,18 +106,31 @@
     </body>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-    <script>
-        new Vue({
-        el: '#app',
-        vuetify: new Vuetify(),
-        })
-    </script>
+
     <script>
         new Vue({
             delimiters: ['[[', ']]'],
+            vuetify: new Vuetify(),
             el: '#app',
-            data: {
-                title: 'Welcome to My Journal',
+            data: function () {
+                return {
+                    date: "",
+                    day_selected: false,
+                    day_items: [],
+                }
+            },
+            methods:{
+                viewDay ({ date }) {
+                    console.log('getting data')
+                    fetch('http://localhost:8000/api/day/' + date)
+                        .then(response => response.json())
+                        .then(data => {
+                            this.date = date
+                            this.day_selected = true
+                            this.day_items = data.day_items
+                        })
+                        .catch(error => console.log(error))
+                },
             }
         })
     </script>

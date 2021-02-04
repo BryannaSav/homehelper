@@ -9,5 +9,6 @@ urlpatterns = [
    path('lists', views.lists, name="lists"),
    path('list/new', views.create_list, name="create_list"),
    path('list/<int:id>', views.one_list, name="one_list"),
+   path('api/day/<str:date>', views.api_one_day, name="one_day"),
    path('test', views.testroute, name="testroute"),
 ]
