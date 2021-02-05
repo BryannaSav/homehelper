@@ -48,27 +48,62 @@
                                         </thead>
                                         <tbody>
                                             {% for item in list_items %}
-                                            <tr>
-                                                <td>
-                                                    {% if item.completed == True %}
-                                                        <input type="checkbox" checked>
-                                                    {% endif %}
-                                                    {% if item.completed == False %}
-                                                        <input type="checkbox">
-                                                    {% endif %}
-
-                                                </td>
-                                                <td>
-                                                    {{item.task}}
-                                                </td>
-                                                <td>
-                                                    {{item.due_date|date:"M d, Y" }}
-                                                </td>
-                                            </tr>
+                                                {% if item.completed == True %}
+                                                <tr class="green" id="row{{item.id}}">
+                                                    <td>
+                                                        <input @click="toggle_complete('{{item.id}}')" type="checkbox" checked>
+                                                    </td>
+                                                    <td>
+                                                        {{item.task}}
+                                                    </td>
+                                                    <td>
+                                                        {{item.due_date|date:"M d, Y" }}
+                                                    </td>
+                                                </tr>
+                                                {% endif %}
+                                                {% if item.completed == False %}
+                                                <tr id="row{{item.id}}">
+                                                    <td>
+                                                        <input @click="toggle_complete('{{item.id}}')" type="checkbox">
+                                                    </td>
+                                                    <td>
+                                                        {{item.task}}
+                                                    </td>
+                                                    <td>
+                                                        {{item.due_date|date:"M d, Y" }}
+                                                    </td>
+                                                </tr>
+                                                {% endif %}
                                             {% endfor %}
+                                            <tr>
+                                            </tr>
                                         </tbody>
                                     </template>
                                 </v-simple-table>
+                                
+                                <v-form action="/listitem/new/{{task_list.id}}" method="POST">
+                                    {% csrf_token %}
+                                    <v-divider class="mb-10"></v-divider>
+                                    <h2>New Task</h2>
+                                    <v-row>
+                                        <v-col>
+                                            <v-text-field 
+                                                type="text" 
+                                                name="task"
+                                                placeholder="NEW TASK">
+                                            </v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-text-field 
+                                                type="date" 
+                                                name="due_date">
+                                            </v-text-field>
+                                        </v-col>
+                                        <v-col>
+                                            <v-btn type="submit" class="blue">Submit</v-btn>
+                                        </v-col>
+                                    </v-row>
+                                </v-form>
                             </v-container>
                         </v-col>
                     </v-row>
@@ -80,16 +115,23 @@
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
     <script>
         new Vue({
-        el: '#app',
-        vuetify: new Vuetify(),
-        })
-    </script>
-    <script>
-        new Vue({
             delimiters: ['[[', ']]'],
+            vuetify: new Vuetify(),
             el: '#app',
             data: {
                 title: 'Welcome to My Journal',
+            },
+            methods: {
+                toggle_complete(task_id){
+                    var element = document.getElementById("row" + task_id);
+                    element.classList.toggle("green");
+                    fetch('http://localhost:8000/api/task/complete/' + task_id)
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data)
+                        })
+                        .catch(error => console.log(error))
+                }
             }
         })
     </script>

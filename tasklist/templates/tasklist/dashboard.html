@@ -86,7 +86,7 @@
                                         <v-card v-if="day_selected" class="mt-10">
                                             <v-card-title>[[date]]</v-card-title>
                                             <v-card-text v-for="item in day_items" :key="name">
-                                                <a href="/">[[item.name]]</a>
+                                                <a href="/dashboard">[[item.name]]</a>
                                                 <a :href="'/list/' + item.task_list_id">[[item.task]]</a>         
                                             </v-card-text>
                                         </v-card>
@@ -121,7 +121,6 @@
             },
             methods:{
                 viewDay ({ date }) {
-                    console.log('getting data')
                     fetch('http://localhost:8000/api/day/' + date)
                         .then(response => response.json())
                         .then(data => {
