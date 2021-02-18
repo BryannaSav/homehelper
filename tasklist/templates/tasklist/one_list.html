@@ -44,6 +44,9 @@
                                                 <th>
                                                     Date
                                                 </th>
+                                                <th>
+                                                    Actions
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -57,6 +60,7 @@
                                                         {{item.task}}
                                                     </td>
                                                     <td>
+                                                        
                                                         {{item.due_date|date:"M d, Y" }}
                                                     </td>
                                                 </tr>
@@ -71,6 +75,11 @@
                                                     </td>
                                                     <td>
                                                         {{item.due_date|date:"M d, Y" }}
+                                                    </td>
+                                                    <td>
+                                                        <!-- <button @click="edit=true; edit_id={{item.id}}; edit_task='{{item.task}}'; edit_due_date='{{item.due_date}}'" title="EDIT" class="mdi mdi-lead-pencil"></button> -->
+                                                        <button @click="open_edit('{{item.id}}', '{{item.task}}', '{{item.due_date}}')" title="EDIT" class="mdi mdi-lead-pencil"></button>
+                                                        <a href="/listitem/delete/{{item.id}}/{{task_list.id}}" title="DELETE" class="mdi mdi-trash-can"></a>
                                                     </td>
                                                 </tr>
                                                 {% endif %}
@@ -104,6 +113,26 @@
                                         </v-col>
                                     </v-row>
                                 </v-form>
+                                <v-dialog max-width="700" v-model="edit">
+                                    <v-card  class="pa-5">
+                                        <v-form :action="`/listitem/edit/${edit_id}/{{task_list.id}}`" method="POST">
+                                            {% csrf_token %}
+                                            <h2>Edit Task</h2>
+                                            <v-text-field 
+                                                id="edit_task"
+                                                type="text" 
+                                                name="task"
+                                                placeholder="edit task">
+                                            </v-text-field>
+                                            <v-text-field 
+                                                type="date" 
+                                                name="due_date">
+                                            </v-text-field>
+                                            <v-btn type="submit" class="blue">Submit</v-btn>
+                                        </v-form>
+                                    </v-card>
+                                    
+                                </v-dialog>
                             </v-container>
                         </v-col>
                     </v-row>
@@ -120,6 +149,10 @@
             el: '#app',
             data: {
                 title: 'Welcome to My Journal',
+                edit: false,
+                edit_id: 0,
+                edit_task: "",
+                edit_due_date: "",
             },
             methods: {
                 toggle_complete(task_id){
@@ -131,7 +164,14 @@
                             console.log(data)
                         })
                         .catch(error => console.log(error))
-                }
+                },
+                open_edit(id, task, due_date) {
+                    this.edit = true
+                    this.edit_id = id
+                    console.log(task)
+                    console.log(due_date)
+                    document.getElementById('edit_task').setAttribute('value', task);
+                },
             }
         })
     </script>

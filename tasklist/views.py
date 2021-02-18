@@ -24,7 +24,8 @@ def dashboard(request):
     upcoming_events = CalendarEvent.objects.filter(user=request.user.id, 
         start_date__range=[start_day, end_date]).order_by('start_date')
     upcoming_tasks = ListItem.objects.filter(user=request.user.id, 
-        due_date__range=[start_day, end_date], completed=False).order_by('due_date')
+        due_date__range=[start_day, end_date], 
+        completed=False).order_by('due_date')
     all_upcoming = list(chain(upcoming_events, upcoming_tasks))
     all_upcoming = sorted(all_upcoming, key = sort_helper)
     return render(request, 'tasklist/dashboard.html', 
@@ -59,11 +60,14 @@ def user_login(request):
     form = AuthenticationForm()
     return render(request, 'tasklist/login.html', {'form':form})
 
+def user_logout(request):
+    logout(request)
+    return redirect('/')
+
 @login_required
 def lists(request):
     lists = TaskList.objects.filter(user=request.user.id)
     return render(request, 'tasklist/lists.html', {'lists': lists})
-
 
 @login_required
 def create_list(request):
@@ -75,6 +79,14 @@ def create_list(request):
     return redirect("/lists")
 
 @login_required
+def one_list(request, id):
+    task_list = TaskList.objects.get(id=id)
+    list_items = ListItem.objects.filter(task_list=id).order_by('completed', 
+        'due_date')
+    return render(request, 'tasklist/one_list.html', 
+        {'task_list': task_list, 'list_items': list_items})
+
+@login_required
 def create_task(request, id):
     if request.method == 'POST':
         task_list = TaskList.objects.get(id=id)
@@ -83,19 +95,22 @@ def create_task(request, id):
             task_list=task_list,
             user=request.user)
         list_item.save()
-        # task_list.save()
     return redirect("/list/"+str(id))
 
 @login_required
-def one_list(request, id):
-    task_list = TaskList.objects.get(id=id)
-    list_items = ListItem.objects.filter(task_list=id)
-    return render(request, 'tasklist/one_list.html', 
-        {'task_list': task_list, 'list_items': list_items})
+def edit_task(request, item_id, list_id):
+    if request.method == 'POST':
+        list_item = ListItem.objects.get(id=item_id)
+        list_item.task = request.POST['task'] 
+        list_item.due_date=request.POST['due_date']
+        list_item.save()
+    return redirect("/list/"+str(list_id))
 
-def user_logout(request):
-    logout(request)
-    return redirect('/')
+@login_required
+def delete_task(request, item_id, list_id):
+    list_item = ListItem.objects.get(id=item_id)
+    list_item.delete()
+    return redirect("/list/"+str(list_id))
 
 def api_one_day(request, date):
     year, month, day = date.split('-')
@@ -108,9 +123,7 @@ def api_one_day(request, date):
 
 def api_complete_task(request, id):
     task = ListItem.objects.get(id=id)
-    print("Before: " + str(task.completed))
     task.completed = not task.completed
-    print("After: " + str(task.completed))
     task.save()
     return JsonResponse({'status': 'complete'})
 
