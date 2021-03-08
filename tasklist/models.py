@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator 
 from django.contrib.auth.models import User 
+from django.forms import ModelForm
 
 class CalendarEvent(models.Model):
     name = models.CharField(max_length=120)
@@ -25,6 +26,11 @@ class TaskList(models.Model):
 
     def __str__(self):
         return self.name
+ 
+class TaskListForm(ModelForm):
+    class Meta: 
+        model = TaskList
+        fields = ['name', 'description']
         
 class ListItem(models.Model):
     task = models.CharField(max_length=120)
@@ -40,3 +46,8 @@ class ListItem(models.Model):
 
     def __str__(self):
         return self.task
+
+class ListItemForm(ModelForm):
+    class Meta: 
+        model = ListItem
+        fields = ['task', 'due_date']

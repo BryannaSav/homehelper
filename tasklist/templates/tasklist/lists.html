@@ -47,12 +47,17 @@
                                     <v-text-field 
                                         type="text" 
                                         name="name"
-                                        placeholder="Name">
+                                        :rules="[rules.required]"
+                                        placeholder="Name"
+                                        counter
+                                        maxlength="120">
                                     </v-text-field>
                                     <v-text-field 
                                         type="text" 
                                         name="description"
-                                        placeholder="Description (optional)">
+                                        placeholder="Description (optional)"
+                                        counter
+                                        maxlength="120">
                                     </v-text-field>
                                     <v-btn type="submit">Submit</v-btn>
                                 </v-form>
@@ -67,17 +72,22 @@
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
     <script>
         new Vue({
-        el: '#app',
-        vuetify: new Vuetify(),
-        })
-    </script>
-    <script>
-        new Vue({
             delimiters: ['[[', ']]'],
             el: '#app',
+            vuetify: new Vuetify(),
             data: {
-                title: 'Welcome to My Journal',
-            }
+                name: null,
+                title: 'Welcome to My Journal',                
+                rules: {
+                    required: value => !!value || 'Required.',
+                },
+            },
+            // methods: {
+            //     checkForm: function(e){
+
+            //     }
+            // }
         })
+
     </script>
 </html>

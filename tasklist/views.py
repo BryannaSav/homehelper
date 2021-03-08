@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from itertools import chain
 
 from .forms import RegisterForm
-from .models import CalendarEvent, TaskList, ListItem
+from .models import CalendarEvent, TaskList, ListItem, TaskListForm, ListItemForm
 from datetime import timedelta, date
 import json
 
@@ -72,10 +72,14 @@ def lists(request):
 @login_required
 def create_list(request):
     if request.method == 'POST':
-        task_list = TaskList(name=request.POST['name'], 
-            description=request.POST['description'], 
-            user=request.user)
-        task_list.save()
+        form = TaskListForm(request.POST)
+        if form.is_valid():
+            task_list = TaskList(name=request.POST['name'], 
+                description=request.POST['description'], 
+                user=request.user)
+            task_list.save()
+        else:
+            print("not valid")
     return redirect("/lists")
 
 @login_required
@@ -89,12 +93,14 @@ def one_list(request, id):
 @login_required
 def create_task(request, id):
     if request.method == 'POST':
-        task_list = TaskList.objects.get(id=id)
-        list_item = ListItem(task=request.POST['task'], 
-            due_date=request.POST['due_date'], 
-            task_list=task_list,
-            user=request.user)
-        list_item.save()
+        form = ListItemForm(request.POST)
+        if form.is_valid():
+            task_list = TaskList.objects.get(id=id)
+            list_item = ListItem(task=request.POST['task'], 
+                due_date=request.POST['due_date'], 
+                task_list=task_list,
+                user=request.user)
+            list_item.save()
     return redirect("/list/"+str(id))
 
 @login_required

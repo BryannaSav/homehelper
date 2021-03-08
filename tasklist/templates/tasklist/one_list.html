@@ -99,12 +99,16 @@
                                             <v-text-field 
                                                 type="text" 
                                                 name="task"
-                                                placeholder="NEW TASK">
+                                                placeholder="NEW TASK"
+                                                :rules="[rules.required]"
+                                                counter
+                                                maxlength="120">
                                             </v-text-field>
                                         </v-col>
                                         <v-col>
                                             <v-text-field 
                                                 type="date" 
+                                                :rules="[rules.required]"
                                                 name="due_date">
                                             </v-text-field>
                                         </v-col>
@@ -122,10 +126,14 @@
                                                 id="edit_task"
                                                 type="text" 
                                                 name="task"
-                                                placeholder="edit task">
+                                                placeholder="edit task"
+                                                :rules="[rules.required]"
+                                                counter
+                                                maxlength="120">
                                             </v-text-field>
                                             <v-text-field 
-                                                type="date" 
+                                                type="date"
+                                                :rules="[rules.required]" 
                                                 name="due_date">
                                             </v-text-field>
                                             <v-btn type="submit" class="blue">Submit</v-btn>
@@ -153,6 +161,9 @@
                 edit_id: 0,
                 edit_task: "",
                 edit_due_date: "",
+                rules: {
+                    required: value => !!value || 'Required.',
+                },
             },
             methods: {
                 toggle_complete(task_id){
