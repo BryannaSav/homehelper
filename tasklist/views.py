@@ -91,6 +91,21 @@ def one_list(request, id):
         {'task_list': task_list, 'list_items': list_items})
 
 @login_required
+def edit_list(request, id):
+    if request.method == 'POST':
+        task_list = TaskList.objects.get(id=id)
+        task_list.name = request.POST['name'] 
+        task_list.description=request.POST['description']
+        task_list.save()
+    return redirect("/lists")
+
+@login_required
+def delete_list(request, id):
+    task_list = TaskList.objects.get(id=id)
+    task_list.delete()
+    return redirect("/lists")
+
+@login_required
 def create_task(request, id):
     if request.method == 'POST':
         form = ListItemForm(request.POST)

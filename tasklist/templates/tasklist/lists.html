@@ -32,7 +32,11 @@
                             <h1>Current Lists</h1>
                             <ul>
                                 {% for task_list in lists %}
-                                    <li><a href="/list/{{task_list.id}}">{{task_list}}</a></li> 
+                                    <li>
+                                        <a href="/list/{{task_list.id}}">{{task_list}}</a>
+                                        <button @click="open_edit('{{task_list.id}}', '{{task_list.name}}',  '{{task_list.description}}')" title="EDIT" class="mdi mdi-lead-pencil"></button>
+                                        <a href="/list/delete/{{task_list.id}}" title="DELETE" class="mdi mdi-trash-can"></a>
+                                    </li> 
                                 {% endfor %}
                             </ul>
                         </v-col>
@@ -64,6 +68,32 @@
                             </template>
                         </v-col>
                     </v-row>
+                    <v-dialog max-width="700" v-model="edit">
+                        <v-card  class="pa-5">
+                            <v-form :action="`/list/edit/${edit_id}`" method="POST">
+                                {% csrf_token %}
+                                <h2>Edit List</h2>
+                                <v-text-field 
+                                    type="text" 
+                                    name="name"
+                                    v-model="edit_list_name"
+                                    :rules="[rules.required]"
+                                    placeholder="Name"
+                                    counter
+                                    maxlength="120">
+                                </v-text-field>
+                                <v-text-field 
+                                    type="text" 
+                                    name="description"
+                                    v-model="edit_list_desc"
+                                    placeholder="Description (optional)"
+                                    counter
+                                    maxlength="120">
+                                </v-text-field>
+                                <v-btn type="submit">Submit</v-btn>
+                            </v-form>
+                        </v-card>
+                    </v-dialog>
                 </v-content>
             </v-app>
         </div>
@@ -77,16 +107,24 @@
             vuetify: new Vuetify(),
             data: {
                 name: null,
-                title: 'Welcome to My Journal',                
+                edit: false,
+                edit_id: 0,
+                edit_list_name: "",              
+                edit_list_desc: "",              
                 rules: {
                     required: value => !!value || 'Required.',
                 },
             },
-            // methods: {
-            //     checkForm: function(e){
-
-            //     }
-            // }
+            methods: {
+                open_edit(id, name, description){
+                    console.log("HIT")
+                    this.edit = true
+                    this.edit_id = id
+                    console.log(id)
+                    this.edit_list_name = name
+                    this.edit_list_desc = description
+                },
+            }
         })
 
     </script>
