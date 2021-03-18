@@ -6,9 +6,10 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from itertools import chain
 
+from django.core import serializers
 from .forms import RegisterForm
-from .models import CalendarEvent, TaskList, ListItem, TaskListForm, ListItemForm
-from datetime import timedelta, date
+from .models import CalendarEvent, TaskList, ListItem, TaskListForm, ListItemForm, CalendarEventForm
+from datetime import timedelta, date, datetime
 import json
 
 def sort_helper(queryset):
@@ -132,6 +133,30 @@ def delete_task(request, item_id, list_id):
     list_item = ListItem.objects.get(id=item_id)
     list_item.delete()
     return redirect("/list/"+str(list_id))
+
+@login_required
+def calendar(request):
+    return render(request, 'tasklist/calendar.html')
+
+@login_required
+def create_event(request):
+    if request.method == 'POST':
+        form = CalendarEventForm(request.POST)
+        if form.is_valid():
+            calendar_event = CalendarEvent(
+                name=request.POST['name'], 
+                start_date=request.POST['start_date'], 
+                user=request.user)
+            calendar_event.save()
+    return redirect("/calendar")
+
+def api_calendar(request):
+    calendar_events = list(CalendarEvent.objects.
+        filter(user=request.user.id).values())
+    for calendar_event in calendar_events:
+        calendar_event['start'] = calendar_event['start_date'].strftime("%Y-%m-%d  %H:%M")
+        calendar_event.pop('start_date')
+    return JsonResponse({'calendar_events': calendar_events})
 
 def api_one_day(request, date):
     year, month, day = date.split('-')

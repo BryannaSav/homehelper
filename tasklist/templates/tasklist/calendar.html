@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <script src="https://unpkg.com/vue"></script>
+    </head>
+    <style>
+        a{
+            color: black !important;
+            text-decoration: none;
+        }
+    </style>
+    <body>
+        <div id="app">
+            <v-app> 
+                <v-content>
+                    <v-row justify="space-between" class="fill-height">
+                        <v-col cols="1" class="blue">
+                            <v-container>
+                                <h2>Dashboard</h2>
+                                <ul >
+                                    <v-list-item><a href="/dashboard">Dashboard</a></v-list-item>
+                                    <v-list-item><a href="/calendar">Calendar</a></v-list-item>
+                                    <v-list-item><a href="/lists">Lists</a></v-list-item>
+                                </ul>
+                            </v-container>
+                        </v-col>
+                        <v-col cols="2" class="pl-9 pt-9">
+                            <v-row>
+                                <v-form action="/calendarevent/new" method="POST">
+                                    {% csrf_token %}
+                                    <h2>New Event</h2>
+                                        <v-text-field 
+                                            type="text" 
+                                            name="name"
+                                            placeholder="NEW EVENT"
+                                            counter
+                                            maxlength="120">
+                                        </v-text-field>
+                                        <v-text-field 
+                                            type="date" 
+                                            name="start_date">
+                                        </v-text-field>
+                                        <v-btn type="submit" class="blue">Submit</v-btn>
+
+                                </v-form>
+                            </v-row>
+                        </v-col>
+                        <v-col cols="7">
+                            <v-container class="ml-9">
+                                <h1>Calendar</h1>
+                                <v-sheet height="600">
+                                    <v-calendar
+                                      ref="calendar"
+                                      :events="events"
+                                      @click:event="viewDay"
+                                    ></v-calendar>
+                                  </v-sheet>
+                            </v-container>
+                        </v-col>
+                        <v-col cols="1">
+
+                        </v-col>
+                    </v-row>
+                </v-content>
+            </v-app>
+        </div>
+    </body>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script>
+        new Vue({
+            delimiters: ['[[', ']]'],
+            vuetify: new Vuetify(),
+            el: '#app',
+            data: {
+                events: []
+            },
+            methods: {
+                get_events(){
+                    console.log("Hello")
+                    fetch('http://localhost:8000/api/calendar')
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log(data.calendar_events)
+                            this.events = data.calendar_events}
+                        )
+                        .catch(error => console.log(error))
+                    },
+                    viewDay ({ event }) {
+                        console.log(event)
+                    },
+            },
+            created() {
+                this.get_events()
+            }
+        })
+
+    </script>
+</html>

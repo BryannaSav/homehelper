@@ -16,6 +16,11 @@ class CalendarEvent(models.Model):
     def __str__(self):
         return self.name
 
+class CalendarEventForm(ModelForm):
+    class Meta: 
+        model = CalendarEvent
+        fields = ['name', 'start_date']
+
 class TaskList(models.Model):
     name = models.CharField(max_length=120)
     description = models.TextField(blank=True, null=True)

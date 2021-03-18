@@ -23,7 +23,7 @@
                                 <h2>Dashboard</h2>
                                 <ul >
                                     <v-list-item><a href="/dashboard">Dashboard</a></v-list-item>
-                                    <v-list-item><a href="/dashboard">Calendar</a></v-list-item>
+                                    <v-list-item><a href="/calendar">Calendar</a></v-list-item>
                                     <v-list-item><a href="/lists">Lists</a></v-list-item>
                                 </ul>
                             </v-container>
@@ -34,7 +34,7 @@
                                 {% for task_list in lists %}
                                     <li>
                                         <a href="/list/{{task_list.id}}">{{task_list}}</a>
-                                        <button @click="open_edit('{{task_list.id}}', '{{task_list.name}}',  '{{task_list.description}}')" title="EDIT" class="mdi mdi-lead-pencil"></button>
+                                        <button @click="open_edit('{{task_list.id}}', '{{task_list.name}}', '{{task_list.description}}')" title="EDIT" class="mdi mdi-lead-pencil"></button>
                                         <a href="/list/delete/{{task_list.id}}" title="DELETE" class="mdi mdi-trash-can"></a>
                                     </li> 
                                 {% endfor %}
