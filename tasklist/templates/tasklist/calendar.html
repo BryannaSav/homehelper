@@ -47,6 +47,14 @@
                                         <v-btn type="submit" class="blue">Submit</v-btn>
 
                                 </v-form>
+                                <v-card v-if="event_selected" class="mt-10" width="100%">
+                                    <v-card-title>[[event_selected.name]]</v-card-title>
+                                    <hr>
+                                    <v-card-text>
+                                        <p>[[event_selected.start]]</p>
+                                        <p>[[event_selected.description]]</p>
+                                    </v-card-text>
+                                </v-card>
                             </v-row>
                         </v-col>
                         <v-col cols="7">
@@ -77,7 +85,8 @@
             vuetify: new Vuetify(),
             el: '#app',
             data: {
-                events: []
+                events: [],
+                event_selected: null
             },
             methods: {
                 get_events(){
@@ -91,7 +100,7 @@
                         .catch(error => console.log(error))
                     },
                     viewDay ({ event }) {
-                        console.log(event)
+                        this.event_selected = event
                     },
             },
             created() {
