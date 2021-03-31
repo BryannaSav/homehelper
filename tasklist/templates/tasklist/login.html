@@ -10,6 +10,9 @@
     <form method="POST">
         {% csrf_token %}
         {{ form.as_p }}
+        {% if error %}
+            <p style="color: red">Invalid Login Credentials</p>
+        {% endif %}
         <button type="submit">Login</button>
     </form>
     <p>Don't have an account? <a href="/">SIGNUP</a></p>

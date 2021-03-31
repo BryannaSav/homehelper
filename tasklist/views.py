@@ -18,6 +18,40 @@ def sort_helper(queryset):
     except:
         return queryset.due_date
 
+def register(request):
+    if request.method == 'POST':
+        print('POST')
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('/dashboard')
+    else:
+        form = RegisterForm()
+    return render(request, 'tasklist/register.html', {'form':form})
+
+def user_login(request):
+    error = None
+    if request.method == 'POST':
+        form = AuthenticationForm(request=request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('/dashboard')
+        error = 'Invalid login'
+    form = AuthenticationForm()
+    return render(request, 'tasklist/login.html', {'form':form, 'error':error})
+
+def user_logout(request):
+    logout(request)
+    return redirect('/')
+
 @login_required
 def dashboard(request):
     start_day = date.today()
@@ -31,39 +65,6 @@ def dashboard(request):
     all_upcoming = sorted(all_upcoming, key = sort_helper)
     return render(request, 'tasklist/dashboard.html', 
         {'all_upcoming' : all_upcoming})
-
-def register(request):
-    if request.method == 'POST':
-        print('POST')
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-        return redirect('/dashboard')
-    else:
-        form = RegisterForm()
-    return render(request, 'tasklist/register.html', {'form':form})
-
-def user_login(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request=request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                print('proper login')
-                return redirect('/dashboard')
-            else:
-                print('User in none')
-        else:
-            print('Not valid form')
-    form = AuthenticationForm()
-    return render(request, 'tasklist/login.html', {'form':form})
-
-def user_logout(request):
-    logout(request)
-    return redirect('/')
 
 @login_required
 def lists(request):
