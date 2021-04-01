@@ -41,9 +41,9 @@
                                 {% endfor %}
                             </ul>
                         </v-col>
-                        <v-divider
-                        vertical
-                        ></v-divider>
+                        <v-divider vertical>
+
+                        </v-divider>
                         <v-col cols="5">
                             <h1>Create List</h1>
                             <template>
@@ -71,13 +71,13 @@
                     </v-row>
                     <v-dialog max-width="700" v-model="edit">
                         <v-card  class="pa-5">
-                            <v-form :action="`/list/edit/${edit_id}`" method="POST">
+                            <v-form :action="`/list/edit/${editId}`" method="POST">
                                 {% csrf_token %}
                                 <h2>Edit List</h2>
                                 <v-text-field 
                                     type="text" 
                                     name="name"
-                                    v-model="edit_list_name"
+                                    v-model="editListName"
                                     :rules="[rules.required]"
                                     placeholder="Name"
                                     counter
@@ -86,7 +86,7 @@
                                 <v-text-field 
                                     type="text" 
                                     name="description"
-                                    v-model="edit_list_desc"
+                                    v-model="editListDesc"
                                     placeholder="Description (optional)"
                                     counter
                                     maxlength="120">
@@ -109,9 +109,9 @@
             data: {
                 name: null,
                 edit: false,
-                edit_id: 0,
-                edit_list_name: "",              
-                edit_list_desc: "",              
+                editId: 0,
+                editListName: "",              
+                editListDesc: "",              
                 rules: {
                     required: value => !!value || 'Required.',
                 },
@@ -120,13 +120,11 @@
                 open_edit(id, name, description){
                     console.log("HIT")
                     this.edit = true
-                    this.edit_id = id
-                    console.log(id)
-                    this.edit_list_name = name
-                    this.edit_list_desc = description
+                    this.editId = id
+                    this.editListName = name
+                    this.editListDesc = description
                 },
             }
         })
-
     </script>
 </html>

@@ -88,12 +88,9 @@
                                                 </tr>
                                                 {% endif %}
                                             {% endfor %}
-                                            <tr>
-                                            </tr>
                                         </tbody>
                                     </template>
                                 </v-simple-table>
-                                
                                 <v-form action="/listitem/new/{{task_list.id}}" method="POST">
                                     {% csrf_token %}
                                     <v-divider class="mb-10"></v-divider>
@@ -123,14 +120,14 @@
                                 </v-form>
                                 <v-dialog max-width="700" v-model="edit">
                                     <v-card  class="pa-5">
-                                        <v-form :action="`/listitem/edit/${edit_id}/{{task_list.id}}`" method="POST">
+                                        <v-form :action="`/listitem/edit/${editId}/{{task_list.id}}`" method="POST">
                                             {% csrf_token %}
                                             <h2>Edit Task</h2>
                                             <v-text-field 
                                                 id="edit_task"
                                                 type="text" 
                                                 name="task"
-                                                v-model="edit_task_title"
+                                                v-model="editTaskTitle"
                                                 placeholder="edit task"
                                                 :rules="[rules.required]"
                                                 counter
@@ -138,14 +135,13 @@
                                             </v-text-field>
                                             <v-text-field 
                                                 type="date"
-                                                v-model="edit_task_date"
+                                                v-model="editTaskDate"
                                                 :rules="[rules.required]" 
                                                 name="due_date">
-                                        </v-text-field>
-                                        <v-btn type="submit" class="blue">Submit</v-btn>
+                                            </v-text-field>
+                                            <v-btn type="submit" class="blue">Submit</v-btn>
                                         </v-form>
                                     </v-card>
-                                    
                                 </v-dialog>
                             </v-container>
                         </v-col>
@@ -163,10 +159,9 @@
             el: '#app',
             data: {
                 edit: false,
-                edit_id: 0,
-                edit_task_title: "",
-                edit_task_date: "",
-                edit_due_date: "",
+                editId: 0,
+                editTaskTitle: "",
+                editTaskDate: "",
                 rules: {
                     required: value => !!value || 'Required.',
                 },
@@ -177,17 +172,16 @@
                     element.classList.toggle("green");
                     fetch('http://localhost:8000/api/task/complete/' + task_id)
                         .then(response => response.json())
-                        .then(data => {
-                            console.log(data)
-                        })
+                        .then(data => console.log(data))
                         .catch(error => console.log(error))
                 },
                 open_edit(id, task, due_date){
                     this.edit = true
-                    this.edit_id = id
-                    this.edit_task_title = task
-                    this.edit_task_date = this.format_date(due_date)
+                    this.editId = id
+                    this.editTaskTitle = task
+                    this.editTaskDate = this.format_date(due_date)
                 },
+                // Formatting date to be usable in date input on edit form
                 format_date(date){
                     date = date.replace(/,/g, "")
                     var months = {

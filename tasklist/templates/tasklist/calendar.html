@@ -34,26 +34,25 @@
                                 <v-form action="/calendarevent/new" method="POST">
                                     {% csrf_token %}
                                     <h2>New Event</h2>
-                                        <v-text-field 
-                                            type="text" 
-                                            name="name"
-                                            placeholder="NEW EVENT"
-                                            counter
-                                            maxlength="120">
-                                        </v-text-field>
-                                        <v-text-field 
-                                            type="date" 
-                                            name="start_date">
-                                        </v-text-field>
-                                        <v-btn type="submit" class="blue">Submit</v-btn>
-
+                                    <v-text-field 
+                                        type="text" 
+                                        name="name"
+                                        placeholder="NEW EVENT"
+                                        counter
+                                        maxlength="120">
+                                    </v-text-field>
+                                    <v-text-field 
+                                        type="date" 
+                                        name="start_date">
+                                    </v-text-field>
+                                    <v-btn type="submit" class="blue">Submit</v-btn>
                                 </v-form>
-                                <v-card v-if="event_selected" class="mt-10" width="100%">
-                                    <v-card-title>[[event_selected.name]]</v-card-title>
+                                <v-card v-if="eventSelected" class="mt-10" width="100%">
+                                    <v-card-title>[[eventSelected.name]]</v-card-title>
                                     <hr>
                                     <v-card-text>
-                                        <p>[[event_selected.start]]</p>
-                                        <p>[[event_selected.description]]</p>
+                                        <p>[[eventSelected.start]]</p>
+                                        <p>[[eventSelected.description]]</p>
                                     </v-card-text>
                                 </v-card>
                             </v-row>
@@ -63,15 +62,14 @@
                                 <h1>Calendar</h1>
                                 <v-sheet height="600">
                                     <v-calendar
-                                      ref="calendar"
-                                      :events="events"
-                                      @click:event="viewDay"
+                                        ref="calendar"
+                                        :events="events"
+                                        @click:event="viewDay"
                                     ></v-calendar>
-                                  </v-sheet>
+                                </v-sheet>
                             </v-container>
                         </v-col>
                         <v-col cols="1">
-
                         </v-col>
                     </v-row>
                 </v-content>
@@ -87,25 +85,23 @@
             el: '#app',
             data: {
                 events: [],
-                event_selected: null
+                eventSelected: null
             },
             methods: {
-                get_events(){
-                    console.log("Hello")
+                getEvents(){
                     fetch('http://localhost:8000/api/calendar')
                         .then(response => response.json())
                         .then(data => {
-                            console.log(data.calendar_events)
                             this.events = data.calendar_events}
                         )
                         .catch(error => console.log(error))
                     },
                     viewDay ({ event }) {
-                        this.event_selected = event
+                        this.eventSelected = event
                     },
             },
             created() {
-                this.get_events()
+                this.getEvents()
             }
         })
 

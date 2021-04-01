@@ -60,44 +60,29 @@
                                 </v-simple-table>
                             </v-container>
                         </v-col>
-                        <v-divider
-                            vertical
-                        ></v-divider>
+                        <v-divider vertical>
+                        </v-divider>
                         <v-col cols="5" class="mr-8 mt-8">
                             <v-row>
                                 <template>
                                     <v-row>
-                                      <v-col>
-                                        <v-sheet height="500">
-                                            <v-calendar
-                                            @click:date="viewDay"
-                                            >
-                                            </v-calendar>
-
-                                          <!-- <v-calendar
-                                            :now="today"
-                                            :value="today"
-                                            color="primary"
-                                            :attributes='attributes'
-                                            @dayclick='dayClicked'
-
-                                          >
-                                          </v-calendar> -->
-                                        </v-sheet>
-                                        <v-card v-if="day_selected" class="mt-10">
-                                            <v-card-title>[[date]]</v-card-title>
-                                            <v-card-text v-for="item in day_items" :key="name">
-                                                <a href="/dashboard">[[item.name]]</a>
-                                                <a :href="'/list/' + item.task_list_id">[[item.task]]</a>         
-                                            </v-card-text>
-                                        </v-card>
-
-                                      </v-col>
+                                        <v-col>
+                                            <v-sheet height="500">
+                                                <v-calendar
+                                                    @click:date="viewDay"
+                                                >
+                                                </v-calendar>
+                                            </v-sheet>
+                                            <v-card v-if="daySelected" class="mt-10">
+                                                <v-card-title>[[date]]</v-card-title>
+                                                <v-card-text v-for="item in dayItems" :key="name">
+                                                    <a href="/dashboard">[[item.name]]</a>
+                                                    <a :href="'/list/' + item.task_list_id">[[item.task]]</a>         
+                                                </v-card-text>
+                                            </v-card>
+                                        </v-col>
                                     </v-row>
                                   </template>
-                            </v-row>
-                            <v-row>
-
                             </v-row>
                         </v-col>
                     </v-row>
@@ -107,7 +92,6 @@
     </body>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-
     <script>
         new Vue({
             delimiters: ['[[', ']]'],
@@ -116,8 +100,8 @@
             data: function () {
                 return {
                     date: "",
-                    day_selected: false,
-                    day_items: [],
+                    daySelected: false,
+                    dayItems: [],
                 }
             },
             methods:{
@@ -126,8 +110,8 @@
                         .then(response => response.json())
                         .then(data => {
                             this.date = date
-                            this.day_selected = true
-                            this.day_items = data.day_items
+                            this.daySelected = true
+                            this.dayItems = data.day_items
                         })
                         .catch(error => console.log(error))
                 },
