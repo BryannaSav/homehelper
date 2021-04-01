@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator 
 from django.contrib.auth.models import User 
 from django.forms import ModelForm
 
@@ -11,7 +10,10 @@ class CalendarEvent(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="calendar_events")
+    user = models.ForeignKey(
+                    User, 
+                    on_delete=models.CASCADE, 
+                    related_name="calendar_events")
 
     def __str__(self):
         return self.name
@@ -27,7 +29,10 @@ class TaskList(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="task_lists")
+    user = models.ForeignKey(
+                    User, 
+                    on_delete=models.CASCADE, 
+                    related_name="task_lists")
 
     def __str__(self):
         return self.name
@@ -47,7 +52,10 @@ class ListItem(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     task_list = models.ForeignKey(TaskList, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="list_items")
+    user = models.ForeignKey(
+                    User, 
+                    on_delete=models.CASCADE, 
+                    related_name="list_items")
 
     def __str__(self):
         return self.task
@@ -56,3 +64,4 @@ class ListItemForm(ModelForm):
     class Meta: 
         model = ListItem
         fields = ['task', 'due_date']
+        
