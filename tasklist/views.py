@@ -172,7 +172,7 @@ def api_calendar(request):
     )
     for calendar_event in calendar_events:
         start_date = calendar_event['start_date']
-        calendar_event['start'] = start_date.strftime('%Y-%m-%d  %H:%M')
+        calendar_event['start'] = start_date.strftime('%Y-%m-%d %H:%M')
         calendar_event.pop('start_date')
     return JsonResponse({'calendar_events': calendar_events})
 
