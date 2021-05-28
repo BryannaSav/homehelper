@@ -115,8 +115,11 @@ run_tests()
 
 
 #Add classes, ids to html to make selecting easier
-#Register tester account in tests
 #Make takslists into a class that I can call all the tasklist page functiuonality from
-#Add the blank name field test
+
+
+#Next time:
+#Register tester account in tests
 #Look into a test framework to run these tests (py.test or unit test)
+#Add the blank name field test
 #Other: django test suite, make db for testing
